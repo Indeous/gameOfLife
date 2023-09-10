@@ -25,4 +25,4 @@ https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 our script will get input, output filename and no. of generation as arguments
 
 
-write a lot for reproducibility
+write a lot about reproducibility
