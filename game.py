@@ -1,5 +1,8 @@
 import sys
-import os
+# import os  why specifically os.path?
+import os.path
+import random
+import time
 
 def grid_dim(grid):
     '''calculate length of grid (why an addition function?)'''
@@ -8,31 +11,158 @@ def grid_dim(grid):
 def read_grid(file_path):
     
     with open(file_path) as f:
-        w, h = None, None
+        # w, h = None, None    < removed this for efficiency
+        
+        try:
+            h, w = map(int, f.readline().split())
+        except ValueError:
+            sys.exit("Invalid grid dimentions. Must be two unsigned integer values separated by a space.")
+        
         grid = []
+        for i in range(h):    
+            # h is no. of rows, this initialises an staring board with zeros
+            grid.append([0] * w)
+            # list comprehension, [0] * w gives list with w 0s
         
         for line in f:
             x, y = map(int, line.split())
-            if w is None and h is None:
-                w, h = y, x
-                for i in range(h):    
-                    # h is no. of rows, this initialises an staring board with zeros
-                    grid.append([0] * w)    
-                    # list comprehension, [0] * w gives list with w 0s
-            else:
-                grid[x-1][y-1] = 1    
-                # assigns 1 to desired cells (but doesn't python count rows and columns from 0?)
-                # yes, IndexError can occur. input.txt should contain first w, h 
-                # and indices of active cells counding from zero
-                # to correct for this -1 on x and y indices
+            grid[x-1][y-1] = 1    
+            # assigns 1 to desired cells but python counts rows and columns from 0
+            # to correct for this -1 on x and y indices
+            
+            #learn and include input methods and y/n from agata
+            
     return grid
 
+def save_grid(grid,output_path):
+    with open (output_path, "w") as f:
+        w, h = grid_dim(grid)
+        f.write(f"{h} {w}\n")    #str format {variable} and \n esc next line
+        for y, row in enumerate(grid):    # y is row index starting from 0
+            for x, cell in enumerate(row):
+                if cell:
+                    f.write(f"{y+1} {x+1}\n")    # x is column index starting from
+    # no need to return as it writes on .txt already
 
-# def tick(grid):
-    # to work on
+def tick(grid):
+    w, h = grid_dim(grid)
+    temp = []
+    # temp = grid.copy()
+    # grid.copy() results in wwrong results, need to check why, what happens with memory
+    
+    for y in range(h):
+        temp.append([0] * w)
+    
+    for y, row in enumerate(grid):
+        for x, cell in enumerate(row):
+            count = 0
+            if y > 0:
+                count += grid[y - 1][x - 1] if x > 0 else 0
+                count += grid[y - 1][x]
+                count += grid[y - 1][x + 1] if x < w - 1 else 0
+
+            count += grid[y][x - 1] if x > 0 else 0
+            count += grid[y][x + 1] if x < w - 1 else 0
+            
+            if y < h - 1:
+                count += grid[y + 1][x - 1] if x > 0 else 0
+                count += grid[y + 1][x]
+                count += grid[y + 1][x + 1] if x < w - 1 else 0
+
+            if cell:
+                cell = 1 if count >= 2 and count <=3 else 0
+            else:
+                cell = 1 if count == 3 else 0
+                
+            # print(y, x, cell)
+            
+            temp[y][x] = cell
+            
+    return temp
+
+def create_grid(w, h, alive=0.5, filename=None, overwrite=False):
+    '''Function that creats large grids based on the given dimentions and percentage of alive cells.
+    Code from https://github.com/girgink/game-of-life/blob/main/game.py'''
+    
+    if alive < 0 or alive > 1.0:
+        raise ValueError("Invalid alive percentage.")
+        # raise ValueError - user defined ValueError unlike 'except'
+    
+    if not filename:
+        filename = f"input_{w}x{h}_{alive}.txt"
+
+    if os.path.exists(filename) and not overwrite:
+        raise FileExistsError
+        
+    m = round(w * h * alive)
+    # no of cells that are to be filled . Round?
+    
+    skip = {}
+
+    with open(filename, "w") as f:
+        f.write(f"{w} {h}\n")    #dims
+        while m > 0:
+            # keep filling up m number of cells and count down to zero
+            x, y = random.randrange(w), random.randrange(h)
+            # random range to fill
+            
+            # I thought, if grid[x][y] is not filled then fill it
+            # directly grid can be constructed & save file simultaneously
+                        
+            idx = y * w + x
+            # multiply row with total width and add column number 
+            # to get unique id for each cell
+                        
+            if idx not in skip:
+                f.write(f"{y} {x}\n")
+                skip[idx] = True
+                # key idx, value true
+                m -= 1
+
+def save_grid_as_rle(grid, filename, overwrite=False):
+    '''Function converts input grid into interoperable open source Golly format.
+    The .rle format - run length encoded format is is commonly-used for storing patterns.
+    Code from https://github.com/girgink/game-of-life/blob/main/game.py'''
+    
+    # need to convert my input files and game.py to read form 0 instead of 1 for using this function
+    
+    if os.path.exists(filename) and not overwrite:
+        raise FileExistsError
+
+    w, h = grid_dims(grid)
+
+    with open(filename, "w") as f:
+        f.write(f"x = {w}, y = {h}, rule = B3/S23:P{w},{h}\n")
+        str = ""
+        val = None
+        run = 0
+        for y, row in enumerate(grid):
+            for x, cell in enumerate(row):
+                if val is None:
+                    val = cell
+                    run = 1
+                elif val == cell:
+                    run += 1
+                else:
+                    str += "{}{}".format(run if run > 1 else "", "o" if val == 1 else "b")
+                    if len(str) > 68:
+                        f.write(f"{str}\n")
+                        str = ""
+                    val = cell
+                    run = 1
+            if val is not None:
+                str += "{}{}".format(run if run > 1 else "", "o" if val == 1 else "b")
+                val = None
+            str += "$"
+            if len(str) > 68:
+                f.write(f"{str}\n")
+                str = ""
+
+        f.write(f"{str}!\n")
+
 
 def main():
-    # print(sys.argv) # gives a list of arg that are given while running game.py
+    # print(sys.argv) # gives a list of arg that are given as arguments with game.py
     
     try:
         input_name = sys.argv[1]
@@ -58,14 +188,24 @@ def main():
     except ValueError: 
         sys.exit("Invalid number of generations {}.".format(sys.argv[3]))
     
-    print(input_name,output_name,n)
+    # print(input_name,output_name,n)
     
     grid = read_grid(input_name)
     print (grid)
     
-    dim = grid_dim(grid)
-    print("The grid has {} rows and {} columns.".format(dim[1],dim[0]))
+    w, h = grid_dim(grid)
+    # print("The grid has {} rows and {} columns.".format(h, w))
     
+    start = time.time()    # calcualates time for processing grid generations
     
+    for i in range(n):
+        grid = tick(grid)
+        print("{} generation GRID:\n{}".format(i+1,grid))
+    
+    print("{} seconds elapsed for {} generations.".format(round(time.time() - start, 7), n))
+    
+    save_grid(grid, output_name)
+    
+
 if __name__ == "__main__":
     main()

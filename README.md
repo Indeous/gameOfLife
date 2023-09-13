@@ -14,7 +14,7 @@ At each step in time, the following transitions occur:
 * Any **live** cell with *more than three live neighbours* **dies**, as if by overpopulation.
 * Any **dead** cell with *exactly three live neighbours* becomes a **live** cell, as if by reproduction.
 
-These <a name="rules"> <span style="color:blue"> rules</span> </a> can be condensed into the following:
+These <a name="rules"> <span style="color:blue"> rules </span> </a> can be condensed into the following:
 
 1. Any **live** cell with *two or three live neighbours* **survives**.
 2. Any **dead** cell with *three live neighbours* becomes a **live** cell.
@@ -52,17 +52,18 @@ Input:
 1 1
 3 2
 ```
-[input.txt](test/input.txt)
+[input.txt](./input.txt)
 
 Output:
 ```
-5 5
-1 1
+3 5
+1 3
+1 4
 2 3
-3 1
+2 4
 3 3
-4 2
+3 4
 ```
-[output.txt](test/output.txt)
+[output.txt](./output.txt)
 
 <!---write a lot about reproducibility--->
