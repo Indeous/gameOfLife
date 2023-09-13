@@ -2,7 +2,7 @@ import sys
 import os
 
 def grid_dim(grid):
-    '''calculate length of grid (why and addition function?)'''
+    '''calculate length of grid (why an addition function?)'''
     return len(grid[0]), len(grid)
     
 def read_grid(file_path):
@@ -58,13 +58,13 @@ def main():
     except ValueError: 
         sys.exit("Invalid number of generations {}.".format(sys.argv[3]))
     
-    # print(input_name,output_name,n)
+    print(input_name,output_name,n)
     
     grid = read_grid(input_name)
-    # print (grid)
+    print (grid)
     
     dim = grid_dim(grid)
-    # print(dim)
+    print("The grid has {} rows and {} columns.".format(dim[1],dim[0]))
     
     
 if __name__ == "__main__":

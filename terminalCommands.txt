@@ -1,0 +1,2 @@
+python game.py input.txt output.txt 3
+cd C:\Users\indup\Documents\bigGeoData\gameOfLife
