@@ -40,7 +40,7 @@ The initial pattern constitutes the seed of the system. The first generation is 
 ## Example
 
 ```
-python game.py input.txt output.txt 3
+python game.py test\input.txt test\output.txt 3
 ```
 
 Input:
@@ -79,6 +79,6 @@ python ./create_grid.py 100 100 0.5
 ## Convert formats
 To convert .txt grid to interoperable open source .rle format, the convert_to_rle() fucntion can be used as follows
 ```
-python convert_to_rle.py input_filename.txt
+python convert_to_rle.py test\input_filename.txt
 ```
 

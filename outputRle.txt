@@ -1,2 +1,0 @@
-x = 5, y = 3, rule = B3/S23:P5,3
-o2bob$2bobo$bo3b$!
