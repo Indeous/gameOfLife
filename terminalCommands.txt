@@ -5,4 +5,5 @@ git commit -m " "
 git push
 git status
 python ./create_grid.py 100 100 0.5
+python convert_to_rle.py input.txt
 use up key to go to prev command!!

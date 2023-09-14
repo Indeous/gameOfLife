@@ -26,9 +26,9 @@ def read_grid(file_path):
         
         for line in f:
             x, y = map(int, line.split())
-            grid[x][y] = 1    
+            grid[x-1][y-1] = 1    
             # assigns 1 to desired cells but python counts rows and columns from 0
-            # to correct for this -1 can be added on x and y indices
+            # to correct for this -1 on x and y indices
             
             #learn and include input methods and y/n from agata
             
@@ -41,7 +41,7 @@ def save_grid(grid,output_path):
         for y, row in enumerate(grid):    # y is row index starting from 0
             for x, cell in enumerate(row):
                 if cell:
-                    f.write(f"{y} {x}\n")    # x is column index starting from 0
+                    f.write(f"{y+1} {x+1}\n")    # x is column index starting from
     # no need to return as it writes on .txt already
 
 def tick(grid):
@@ -121,10 +121,12 @@ def save_grid_as_rle(grid, filename, overwrite=False):
     The .rle format - run length encoded format is is commonly-used for storing patterns.
     Code from https://github.com/girgink/game-of-life/blob/main/game.py'''
     
+    # need to convert my input files and game.py to read form 0 instead of 1 for using this function
+    
     if os.path.exists(filename) and not overwrite:
         raise FileExistsError
 
-    w, h = grid_dim(grid)
+    w, h = grid_dims(grid)
 
     with open(filename, "w") as f:
         f.write(f"x = {w}, y = {h}, rule = B3/S23:P{w},{h}\n")

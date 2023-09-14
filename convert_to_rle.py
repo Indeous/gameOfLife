@@ -22,6 +22,7 @@ def main():
     opts = {}
 
     if num_args > 3:
+        # didn't fully understand > 3 shouldn't it be > 2
         opts["overwrite"] = sys.argv[4].upper() in ["YES", "Y", "1", "TRUE"]
 
     grid = read_grid(inp)

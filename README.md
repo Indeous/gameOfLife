@@ -33,9 +33,9 @@ The initial pattern constitutes the seed of the system. The first generation is 
 * Input and output files are of text format.
 * The first line indicates the width and height of the grid as unsigned integer values separated by a space.
 * The remaining lines indicate the initial location of the living cells. Each line has two unsigned integer values separated by space indicating vertical(row) and horizontal(column) coordinates of the living cells, respectively.
-    * The top left cell has the coordinates of (1, 1)
-    * Valid vertical coordinate values range between 1 - (height), increasing from top to bottom.
-    * Valid horizontal coordinate values range between 1 - (width), increasing from left to right.
+    * The top left cell has the coordinates of (0, 0)
+    * Valid vertical coordinate values range between \[0 - height), increasing from top to bottom.
+    * Valid horizontal coordinate values range between \[1 - width), increasing from left to right.
 
 ## Example
 
@@ -46,24 +46,39 @@ python game.py input.txt output.txt 3
 Input:
 ```
 3 5
+0 3
+0 0
+1 2
 1 4
-2 3
-2 5
-1 1
-3 2
+2 1
 ```
 [input.txt](./input.txt)
 
 Output:
 ```
 3 5
+0 2
+0 3
+1 2
 1 3
-1 4
+2 2
 2 3
-2 4
-3 3
-3 4
 ```
 [output.txt](./output.txt)
 
 <!---write a lot about reproducibility--->
+
+## Create large grids
+To create large grids with randomly assigned fill percentage, the create_grid() function can be used. This can be called as the following example
+```
+# python ./create_grid.py *unsigned_int_width* *unsigned_int_height* *unsigned_float_alivePercentage_Between0-1* *Optional_output_filename*
+
+python ./create_grid.py 100 100 0.5 
+```
+
+## Convert formats
+To convert .txt grid to interoperable open source .rle format, the convert_to_rle() fucntion can be used as follows
+```
+python convert_to_rle.py input_filename.txt
+```
+
