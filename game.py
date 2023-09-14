@@ -5,7 +5,7 @@ import random
 import time
 
 def grid_dim(grid):
-    '''calculate length of grid (why an addition function?)'''
+    '''calculate length of grid'''
     return len(grid[0]), len(grid)
     
 def read_grid(file_path):
