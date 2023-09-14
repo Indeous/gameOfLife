@@ -11,7 +11,7 @@ def grid_dim(grid):
 def read_grid(file_path):
     
     with open(file_path) as f:
-        # w, h = None, None    < removed this for efficiency
+        # w, h = None, None    < removed this
         
         try:
             h, w = map(int, f.readline().split())
